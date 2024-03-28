@@ -33,12 +33,12 @@ func (c *ConstantWorker) DoWork(ctx context.Context, task func(ctx context.Conte
 		case <-ctx.Done():
 			stop = true
 		case <-ticker.C:
-			logrus.Debug("Executing iteration: ", executedIterations)
+			logrus.Info("Executing iteration: ", executedIterations)
 			c.wg.Add(1)
 			go func() {
 				defer c.wg.Done()
 				if err := c.runIteration(ctx, task); err != nil {
-					logrus.Debug("Error executing iteration: ", err)
+					logrus.Info("Error executing iteration: ", err)
 					c.errorInterations.Inc()
 				}
 			}()
@@ -70,13 +70,13 @@ func (c *ConstantWorker) runIteration(ctx context.Context, task func(ctx context
 		case <-ctx.Done():
 			return nil
 		default:
-			logrus.Debug("Executing task: ", i)
+			logrus.Info("Executing task: ", i)
 			c.wg.Add(1)
 			go func() {
 				defer c.wg.Done()
 				defer c.executedTasks.Inc()
 				if err := task(ctx); err != nil {
-					logrus.Debug("Error executing task: ", err)
+					logrus.Info("Error executing task: ", err)
 					c.errorTasks.Inc()
 				}
 			}()
