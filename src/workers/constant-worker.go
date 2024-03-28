@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jimmysfernandes/go-hammer/src/metrics"
+	"github.com/sirupsen/logrus"
 )
 
 type ConstantWorker struct {
@@ -72,6 +73,7 @@ func (c *ConstantWorker) runIteration(ctx context.Context, task func(ctx context
 				defer c.wg.Done()
 				defer c.executedTasks.Inc()
 				if err := task(ctx); err != nil {
+					logrus.Debug("Error executing task: %v", err)
 					c.errorTasks.Inc()
 				}
 			}()
